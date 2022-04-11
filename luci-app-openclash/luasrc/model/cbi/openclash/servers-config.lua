@@ -163,6 +163,7 @@ o:depends("type", "ss")
 
 o = s:option(ListValue, "cipher_ssr", translate("Encrypt Method"))
 for _, v in ipairs(encrypt_methods_ssr) do o:value(v) end
+o:value("dummy", "none")
 o.rmempty = true
 o:depends("type", "ssr")
 
@@ -352,6 +353,13 @@ o:depends({obfs_vmess = "websocket", tls = "true"})
 o:depends({obfs_vmess = "grpc", tls = "true"})
 o:depends({obfs_vmess = "none", tls = "true"})
 o:depends("type", "vless")
+
+o = s:option(Value, "vless_flow", translate("flow"))
+o.rmempty = true
+o.default = "xtls-rprx-direct"
+o:value("xtls-rprx-direct")
+o:value("xtls-rprx-origin")
+o:depends("obfs_vless", "none")
 
 o = s:option(Value, "keep_alive", translate("keep-alive"))
 o.rmempty = true

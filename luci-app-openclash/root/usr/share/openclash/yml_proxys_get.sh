@@ -539,7 +539,11 @@ do
       Thread.new{
       #cipher
       if Value['proxies'][$count].key?('cipher') then
-         cipher = '${uci_set}cipher_ssr=' + Value['proxies'][$count]['cipher'].to_s
+         if Value['proxies'][$count]['cipher'].to_s == 'none' then
+            cipher = '${uci_set}cipher_ssr=dummy'
+         else
+            cipher = '${uci_set}cipher_ssr=' + Value['proxies'][$count]['cipher'].to_s
+         end
          system(cipher)
       end
       }.join
@@ -753,6 +757,14 @@ do
       if Value['proxies'][$count].key?('servername') then
          servername = '${uci_set}servername=\"' + Value['proxies'][$count]['servername'].to_s + '\"'
          system(servername)
+      end
+      }.join
+      
+      Thread.new{
+      #flow
+      if Value['proxies'][$count].key?('flow') then
+         flow = '${uci_set}vless_flow=\"' + Value['proxies'][$count]['flow'].to_s + '\"'
+         system(flow)
       end
       }.join
       

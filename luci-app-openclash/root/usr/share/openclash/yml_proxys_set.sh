@@ -235,6 +235,7 @@ yml_servers_set()
    config_get "interface_name" "$section" "interface_name" ""
    config_get "routing_mark" "$section" "routing_mark" ""
    config_get "obfs_vless" "$section" "obfs_vless" ""
+   config_get "vless_flow" "$section" "vless_flow" ""
 
    if [ "$enabled" = "0" ]; then
       return
@@ -286,6 +287,10 @@ yml_servers_set()
       fi
    fi
    LOG_OUT "Start Writing【$CONFIG_NAME - $type - $name】Proxy To Config File..."
+   
+   if [ "$cipher_ssr" == "none" ]; then
+      cipher_ssr="dummy"
+   fi
    
    if [ "$obfs" != "none" ] && [ -n "$obfs" ]; then
       if [ "$obfs" = "websocket" ]; then
@@ -589,6 +594,12 @@ EOF
 cat >> "$SERVER_FILE" <<-EOF
     grpc-opts:
       grpc-service-name: "$grpc_service_name"
+EOF
+         fi
+      else
+         if [ ! -z "$vless_flow" ]; then
+cat >> "$SERVER_FILE" <<-EOF
+    flow: "$vless_flow"
 EOF
          fi
       fi
