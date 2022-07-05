@@ -138,7 +138,7 @@ revert_dns() {
          config_list_foreach "config" "dnsmasq_server" set_dnsmasq_server
       }
       
-      if [ "$4" == "0" ] || [ -z "$4" ]; then
+      if [ "$4" == "0" ] || [ -z "$4" ] || [ -z "$(uci -q show dhcp.@dnsmasq[0].server)" ]; then
          uci -q set dhcp.@dnsmasq[0].noresolv=0
          if [ -n "$5" ]; then
             uci -q set dhcp.@dnsmasq[0].resolvfile="$5"
@@ -1291,7 +1291,10 @@ if [ -n "$en_mode_tun" ]; then
 
    ip route replace default dev utun table "$PROXY_ROUTE_TABLE"
    ip rule add fwmark "$PROXY_FWMARK" table "$PROXY_ROUTE_TABLE"
-   
+
+   #MTU UP TO 65535
+   ifconfig utun mtu 65535 >/dev/null 2>&1
+
    #设置防火墙
    if [ "$en_mode" = "fake-ip" ]; then
       iptables -t mangle -N openclash_output
